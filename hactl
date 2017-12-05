@@ -1,6 +1,6 @@
 #!/bin/bash
 
-HASSCTL_VERSION="1.0.1"
+HASSCTL_VERSION="1.0.2"
 
 debug() {
   (( $DEBUG )) && echo "$(basename $0): DEBUG:" "$@"
@@ -25,7 +25,7 @@ die() {
 }
 
 usage() {
-  echo "usage: $(basename $0) {help|version|start|stop|restart|kill|log|error|debug|enter|pause|unpause}" 2>&1
+  echo "usage: $(basename $0) {help|version|start|stop|restart|kill|log|error|debug|enter|pause|unpause|update_hactl}" 2>&1
   exit 1
 }
 
@@ -73,6 +73,10 @@ read_config() {
 
 
   HASS_SERVICE="homeassistant"
+  HASSCTL_EXEC="$(realpath $0)"
+
+
+
 
 
   return 0
@@ -95,7 +99,7 @@ maybe_exec_as() {
 }
 
 # Update hassctl script
-update_hassctl() {
+update_hactl() {
   read_config
 
   BRANCH="${1:-$HASSCTL_BRANCH}"
@@ -202,8 +206,8 @@ case "$1" in
     check_config "${@:2}"
     ;;
 
-  update-hassctl)
-    update_hassctl "${@:2}"
+  update_hactl)
+    update_hactl "${@:2}"
     ;;
 
   update-hass)
