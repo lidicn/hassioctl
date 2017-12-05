@@ -78,26 +78,7 @@ read_config() {
   return 0
 }
 
-download_config() {
-  [[ ! -f "$HASSCTL_CONF" ]] || return
 
-  BRANCH="${1:-$HASSCTL_BRANCH}"
-  BRANCH="${BRANCH:-master}"
-
-  CONFIG_URL="https://raw.githubusercontent.com/dale3h/hassctl/$BRANCH/hassctl.conf"
-
-  debug "downloading default config from $CONFIG_URL"
-
-  HTTP_CODE="$(sudo $curl --write-out %{http_code} --silent --show-error --output "$HASSCTL_CONF" "$CONFIG_URL")"
-
-  if [[ $? -ne 0 ]] || [[ "$HTTP_CODE" != "200" ]]; then
-    # Clean up failed config file
-    [[ -f "$HASSCTL_CONF" ]] && sudo $rm "$HASSCTL_CONF"
-    debug "could not install default config"
-  else
-    debug "installed default config to $HASSCTL_CONF"
-  fi
-}
 
 # Execute commands for a specific user
 maybe_exec_as() {
@@ -120,9 +101,9 @@ update_hassctl() {
   BRANCH="${1:-$HASSCTL_BRANCH}"
   BRANCH="${BRANCH:-master}"
 
-  BRANCH_URL="https://raw.githubusercontent.com/dale3h/hassctl/$BRANCH"
-  HASSCTL_URL="$BRANCH_URL/hassctl"
-  CONFIG_URL="$BRANCH_URL/hassctl.conf"
+  BRANCH_URL="https://raw.githubusercontent.com/lidicn/hassioctl/$BRANCH"
+  HASSCTL_URL="$BRANCH_URL/hactl"
+
 
   debug "installing from $HASSCTL_URL"
 
@@ -143,18 +124,7 @@ update_hassctl() {
   exit 0
 }
 
-# Update homeassistant package
-update_hass() {
-  read_config
-  local VERSION="$1"
 
-  if [[ ! -z $VERSION ]]; then
-    VERSION="==$VERSION"
-  fi
-
-  maybe_exec_as "$HASS_USER" "$PIP_EXEC" install --upgrade homeassistant$VERSION
-  exit $?
-}
 
 # Run hass check_config script
 check_config() {
